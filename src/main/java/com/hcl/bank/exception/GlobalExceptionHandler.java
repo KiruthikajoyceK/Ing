@@ -19,9 +19,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 			WebRequest request) {
 
-		ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), exception.getMessage(),
+		ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), exception.getMessage()
 
-				HttpStatus.NOT_FOUND.value());
+				);
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
@@ -34,9 +34,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 			WebRequest request) {
 
-		ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), exception.getMessage(),
+		ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), exception.getMessage()
 
-				HttpStatus.NOT_FOUND.value());
+				);
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}

@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.hcl.bank.constants.FundtransferConstants;
 import com.hcl.bank.dto.LoginRequestDto;
 import com.hcl.bank.dto.LoginResponseDto;
 import com.hcl.bank.entity.User;

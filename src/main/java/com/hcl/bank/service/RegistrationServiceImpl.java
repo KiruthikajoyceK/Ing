@@ -40,6 +40,7 @@ public class RegistrationServiceImpl implements RegistrationServiceIntf {
 		RandomPasswordGenerator passwordGenerator=new RandomPasswordGenerator();
 		
 		int len = 10;
+		@SuppressWarnings("static-access")
 		String password = passwordGenerator.generatePassword(len, ALPHA_CAPS + ALPHA);
 		UserResponseDto userResponseDto=new UserResponseDto();
 		
@@ -88,6 +89,7 @@ public class RegistrationServiceImpl implements RegistrationServiceIntf {
 				user.setMobileNo(userRequestDto.getMobileNo());
 				user.setPassword(password);
 				userRepository.save(user);
+				@SuppressWarnings("static-access")
 				long accountNo=passwordGenerator.random(500000, 900000);
 				
 				Account account=new Account();

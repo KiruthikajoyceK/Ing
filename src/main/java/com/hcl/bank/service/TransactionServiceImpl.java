@@ -15,6 +15,7 @@ import com.hcl.bank.entity.Account;
 import com.hcl.bank.entity.Transaction;
 import com.hcl.bank.exception.CommonException;
 import com.hcl.bank.repository.AccountRepository;
+import com.hcl.bank.repository.BenificiaryRepository;
 import com.hcl.bank.repository.TransactionRepository;
 
 @Service
@@ -25,23 +26,41 @@ public class TransactionServiceImpl implements TransactionServiceIntf {
 
 	@Autowired
 	TransactionRepository transactionRepository;
+	
+	@Autowired
+	BenificiaryRepository benificiaryRepository;
 
 	@Override
 	public FundTransferResponseDto fundTransfer(FundTransferRequestDto fundTransferRequestDto) {
 
 		double transactionAmount = fundTransferRequestDto.getTransactionAmount();
 
+		if (fundTransferRequestDto.getFromAccountNo() == fundTransferRequestDto.getToAccountNo()) {
+			throw new CommonException(FundtransferConstants.ACCOUNT_SAME);
+		}
 		Account fromAccount = accountRepository.findByAccountNumber(fundTransferRequestDto.getFromAccountNo());
-
+        
+		/*
+		 * int userId=fromAccount.getUser().getUserId(); List<Benificiary>
+		 * benificiary=benificiaryRepository.findBenificiaryByUserId(userId); for
+		 * (Benificiary benificiary2 : benificiary) {
+		 * if(benificiary2.getBenificiaryAccountNo()==fundTransferRequestDto.
+		 * getToAccountNo()) { throw new
+		 * CommonException(FundtransferConstants.NOT_IN_LIST); }
+		 */
+		
+		
 		Account toAccount = accountRepository.findByAccountNumber(fundTransferRequestDto.getToAccountNo());
-   if(fundTransferRequestDto.getTransactionAmount()==0)
-   {
-	   throw new CommonException(FundtransferConstants.INVALID_BALANCE);
-   }
-	    if(fundTransferRequestDto.getTransactionAmount()>fromAccount.getAccountBalance())	
-	    {
-	    throw new CommonException(FundtransferConstants.INVALID_SUFFICIENT_BALANCE);
-	    }
+		if (fundTransferRequestDto.getTransactionAmount() == 0) {
+			throw new CommonException(FundtransferConstants.INVALID_BALANCE);
+		}
+		if (fundTransferRequestDto.getTransactionAmount() < 0) {
+			throw new CommonException(FundtransferConstants.INVALID_NEGATIVE_BALANCE);
+		}
+		if (fundTransferRequestDto.getTransactionAmount() > fromAccount.getAccountBalance()) {
+			throw new CommonException(FundtransferConstants.INVALID_SUFFICIENT_BALANCE);
+		}
+
 		double userBalance = fromAccount.getAccountBalance();
 		double benificiaryBalance = toAccount.getAccountBalance();
 		double debitBalance = userBalance - transactionAmount;
@@ -70,16 +89,17 @@ public class TransactionServiceImpl implements TransactionServiceIntf {
 		creditTransaction.setTransactionType(FundtransferConstants.CREDITED);
 		creditTransaction.setUser(toAccount.getUser());
 		transactionRepository.save(creditTransaction);
-
+		
+	
 		FundTransferResponseDto fundTransferResponseDto = new FundTransferResponseDto();
 		fundTransferResponseDto.setMessage("transferred successfully");
 
 		return fundTransferResponseDto;
 	}
+	
+	
+	
 
-	
-	
-	
 	public List<TransactionResponseDto> transactionHistory(int userId, int noOfWeeks, int noOfMonths) {
 
 		LocalDate currentDate = LocalDate.now();
@@ -124,10 +144,9 @@ public class TransactionServiceImpl implements TransactionServiceIntf {
 			}
 
 		}
-		
+
 		return transactionResponseDtos;
-		
-	
+
 	}
 
 }

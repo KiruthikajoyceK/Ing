@@ -10,8 +10,10 @@ public class RandomPasswordGenerator {
 
 	    /** different dictionaries used */
 	   
-	    private static final String NUMERIC = "0123456789";
-	    private static final String SPECIAL_CHARS = "!@#$%^&*_=+-/";
+	    @SuppressWarnings("unused")
+		private static final String NUMERIC = "0123456789";
+	    @SuppressWarnings("unused")
+		private static final String SPECIAL_CHARS = "!@#$%^&*_=+-/";
 
 	    /**
 	     * Method will generate random string based on the parameters
@@ -33,10 +35,10 @@ public class RandomPasswordGenerator {
 	    }
 	
 	
-		private static final Random RANDOM = new Random();
+		private static final Random randomm = new Random();
 
 		public static long random(int min, int max) {
-		    return RANDOM.nextInt(max) + min;
+		    return randomm.nextInt(max) + min;
 		}
 		
 	
