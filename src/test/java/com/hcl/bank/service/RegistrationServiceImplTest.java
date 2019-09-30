@@ -1,6 +1,7 @@
 package com.hcl.bank.service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,10 +9,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.BeanUtils;
 
-import com.hcl.bank.dto.RandomPasswordGenerator;
 import com.hcl.bank.dto.UserRequestDto;
 import com.hcl.bank.dto.UserResponseDto;
 import com.hcl.bank.entity.Account;
@@ -21,71 +21,59 @@ import com.hcl.bank.repository.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationServiceImplTest {
-	
+
 	@InjectMocks
 	RegistrationServiceImpl registrationServiceImpl;
-	
+
 	@Mock
 	UserRepository userRepository;
-	
+
 	@Mock
 	AccountRepository accountRepository;
-	
+
 	UserRequestDto userRequestDto;
-	UserResponseDto userResponseDto;
-	long accountNo;
-	RandomPasswordGenerator passwordGenerator=new RandomPasswordGenerator();
-	User user;
+
 	Account account;
+	User user1;
 	
-	
-	@SuppressWarnings("static-access")
+	Optional<User> user = null;
 	@Before
-	public void setup()
-	{
-		userRequestDto=new UserRequestDto();
-		
-		  userRequestDto.setUserName("kiruthika"); 
-		  userRequestDto.setAddress("trichy");
-		  userRequestDto.setAge(19);
-		  userRequestDto.setEmail("ki@gmail.com");
-		  userRequestDto.setMobileNo(72358999);
-		 
-		 accountNo=passwordGenerator.random(500000, 900000);
-		
-		 user=new User();
-		user.setUserId(1);
-			
-		account=new Account();
+	public void setup() {
+		user1 = new User();
+		user1.setUserId(1);
+		user1.setUserName("kiruthika");
+		user1.setAddress("trichy");
+		user1.setAge(19);
+		user1.setEmail("ki@gmail.com");
+		user1.setMobileNo(72358999L);
+
+		userRequestDto = new UserRequestDto();
+		userRequestDto.setUserName("kiruthika");
+		userRequestDto.setAddress("trichy");
+		userRequestDto.setAge(19);
+		userRequestDto.setEmail("ki@gmail.com");
+		userRequestDto.setMobileNo(72358999L);
+
+		account = new Account();
 		account.setAccountBalance(10000);
 		account.setAccountCreationDate(LocalDate.now());
-		account.setAccountNumber(accountNo);
+		account.setAccountNumber(12345678L);
 		account.setAccountType("savings");
-		account.setUser(user);
-		
-		
-		userResponseDto=new UserResponseDto();
-		
-		
-		BeanUtils.copyProperties(account, userResponseDto);
+		account.setUser(user1);
+
 	}
-	
+
 	@Test
-	public void testRegistration1()
-	{
-		
-       UserResponseDto  userResponseDtoo=registrationServiceImpl.registration(userRequestDto);
-	
-         Assert.assertEquals(userResponseDto.getClass(), userResponseDtoo.getClass()); 
-        int userId= account.getUser().getUserId();
-		Assert.assertEquals(user.getUserId(),userId);
+	public void testRegistration1() {
+
+		Mockito.when(userRepository.findByMobileNoAndEmail(Mockito.anyLong(),Mockito.anyString())).thenReturn(Optional.empty());
+		Mockito.when(userRepository.save(Mockito.any())).thenReturn(user1);
+
+		Mockito.when(accountRepository.save(Mockito.any())).thenReturn(account);
+
+		UserResponseDto userResponseDto = registrationServiceImpl.registration(userRequestDto);
+		Assert.assertEquals(12345678L, userResponseDto.getAccountNumber());
+
 	}
-	
-	@Test
-	public void testRegistration2()
-	{
-		//Mockito.when(userRepository.findByMobileNo(userRequestDto.getMobileNo())).thenReturn(Optional.of(user));
-	
-       }
 
 }

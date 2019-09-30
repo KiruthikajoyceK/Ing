@@ -31,6 +31,34 @@ public class BenificiaryServiceImpl implements BenificiaryServiceIntf {
 
 		List<Benificiary> benificiaries = user.getBenificiaries();
 
+		if (benificiaries.isEmpty()) {
+			Benificiary benificiary1 = new Benificiary();
+			benificiary1.setBenificiaryAccountNo(benificiaryRequestDto.getBenificiaryAccountNo());
+
+			if (benificiaryRequestDto.getBenificiaryAccountType().isEmpty()) {
+				throw new CommonException(FundtransferConstants.BENIFICIARY_ACCOUNT_TYPE);
+			}
+			benificiary1.setBenificiaryAccountType(benificiaryRequestDto.getBenificiaryAccountType());
+
+			if (benificiaryRequestDto.getBenificiaryBankName().isEmpty()) {
+				throw new CommonException(FundtransferConstants.BENIFICIARY_BANK_NAME);
+			}
+			benificiary1.setBenificiaryBankName(benificiaryRequestDto.getBenificiaryBankName());
+
+			if (benificiaryRequestDto.getBenificiaryName().isEmpty()) {
+				throw new CommonException(FundtransferConstants.BENIFICIARY_NAME);
+			}
+			benificiary1.setBenificiaryName(benificiaryRequestDto.getBenificiaryName());
+
+			if (benificiaryRequestDto.getIfscCode().isEmpty()) {
+				throw new CommonException(FundtransferConstants.IFSC_CODE);
+			}
+			benificiary1.setIfscCode(benificiaryRequestDto.getIfscCode());
+			benificiary1.setUser(user);
+			benificiaryRepository.save(benificiary1);
+
+		}
+
 		for (Benificiary benificiaryy : benificiaries) {
 
 			if (benificiaryy.getBenificiaryAccountNo() == benificiaryRequestDto.getBenificiaryAccountNo()) {

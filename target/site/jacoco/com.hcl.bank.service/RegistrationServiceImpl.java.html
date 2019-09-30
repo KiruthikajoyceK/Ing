@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegistrationServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bank</a> &gt; <a href="index.source.html" class="el_package">com.hcl.bank.service</a> &gt; <span class="el_source">RegistrationServiceImpl.java</span></div><h1>RegistrationServiceImpl.java</h1><pre class="source lang-java linenums">package com.hcl.bank.service;
+
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hcl.bank.constants.FundtransferConstants;
+import com.hcl.bank.dto.RandomPasswordGenerator;
+import com.hcl.bank.dto.UserRequestDto;
+import com.hcl.bank.dto.UserResponseDto;
+import com.hcl.bank.entity.Account;
+import com.hcl.bank.entity.User;
+import com.hcl.bank.exception.CommonException;
+import com.hcl.bank.repository.AccountRepository;
+import com.hcl.bank.repository.UserRepository;
+
+@Service
+<span class="fc" id="L22">public class RegistrationServiceImpl implements RegistrationServiceIntf {</span>
+	
+	
+	 private static final String ALPHA_CAPS = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;;
+	 private static final String ALPHA = &quot;abcdefghijklmnopqrstuvwxyz&quot;;
+
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	AccountRepository accountRepository;
+	
+	@Override
+	public UserResponseDto registration(UserRequestDto userRequestDto) {
+		
+<span class="fc" id="L37">		Optional&lt;User&gt; user1=userRepository.findByMobileNoAndEmail(userRequestDto.getMobileNo(),userRequestDto.getEmail());</span>
+		
+<span class="fc" id="L39">		RandomPasswordGenerator passwordGenerator=new RandomPasswordGenerator();</span>
+		
+<span class="fc" id="L41">		int len = 10;</span>
+		@SuppressWarnings(&quot;static-access&quot;)
+<span class="fc" id="L43">		String password = passwordGenerator.generatePassword(len, ALPHA_CAPS + ALPHA);</span>
+<span class="fc" id="L44">		UserResponseDto userResponseDto=new UserResponseDto();</span>
+		
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">		if(user1.isPresent())</span>
+		{
+			
+<span class="nc" id="L49">			throw new CommonException(FundtransferConstants.EXISTS_USER);</span>
+		}
+		else
+		{
+<span class="fc" id="L53">			User user=new User();</span>
+			
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">			    if(userRequestDto.getUserName().isEmpty())</span>
+			    {
+<span class="nc" id="L57">				throw new CommonException(FundtransferConstants.EMPTY_USER_NAME);</span>
+					
+			    }
+<span class="fc" id="L60">				user.setUserName(userRequestDto.getUserName());</span>
+				
+				
+				
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">				if(userRequestDto.getAddress().isEmpty())</span>
+				{
+<span class="nc" id="L66">					throw new CommonException(FundtransferConstants.EMPTY_USER_ADDRESS);</span>
+						
+				}
+<span class="fc" id="L69">				user.setAddress(userRequestDto.getAddress());</span>
+				
+				
+				
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">				if(userRequestDto.getAge()&lt;18)</span>
+				{
+<span class="nc" id="L75">					throw new CommonException(FundtransferConstants.INVALID_AGE);</span>
+				}
+<span class="fc" id="L77">				user.setAge(userRequestDto.getAge());</span>
+				
+				
+				
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">				if(!emailValidation(userRequestDto.getEmail()))</span>
+				{
+<span class="nc" id="L83">					throw new CommonException(FundtransferConstants.INVALID_EMAIL);</span>
+				}				
+<span class="fc" id="L85">				user.setEmail(userRequestDto.getEmail());</span>
+				
+				
+				
+<span class="fc" id="L89">				user.setMobileNo(userRequestDto.getMobileNo());</span>
+<span class="fc" id="L90">				user.setPassword(password);</span>
+<span class="fc" id="L91">				User userr=userRepository.save(user);</span>
+				@SuppressWarnings(&quot;static-access&quot;)
+<span class="fc" id="L93">				long accountNo=passwordGenerator.random(500000, 900000);</span>
+				
+<span class="fc" id="L95">				Account account=new Account();</span>
+				
+<span class="fc" id="L97">				account.setAccountNumber(accountNo+3);</span>
+<span class="fc" id="L98">				account.setAccountBalance(500);</span>
+<span class="fc" id="L99">				account.setAccountCreationDate(LocalDate.now());</span>
+<span class="fc" id="L100">				account.setAccountType(&quot;Savings&quot;);</span>
+<span class="fc" id="L101">				account.setUser(user);</span>
+<span class="fc" id="L102">				Account accountt=accountRepository.save(account);</span>
+				
+<span class="fc" id="L104">				userResponseDto.setAccountNumber(accountt.getAccountNumber());</span>
+<span class="fc" id="L105">				userResponseDto.setPassword(userr.getPassword());</span>
+<span class="fc" id="L106">				userResponseDto.setMessage(FundtransferConstants.ACCOUNT_CREATED);</span>
+				
+<span class="fc" id="L108">				return userResponseDto;</span>
+		}
+						
+			}
+	 public static boolean emailValidation(String email)
+	    {
+<span class="fc" id="L114">	        String emailPattern = &quot;^[a-zA-Z0-9_#$%&amp;’*+/=?^.-]+(?:\\.[a-zA-Z0-9_+&amp;*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$&quot;;</span>
+<span class="fc" id="L115">	        Pattern pat = Pattern.compile(emailPattern);</span>
+<span class="fc" id="L116">	        Matcher mat = pat.matcher(email);</span>
+<span class="fc" id="L117">	        return mat.matches();</span>
+	    }
+				
+			}
+
+			
+		
+		
+		
+	
+
+	
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

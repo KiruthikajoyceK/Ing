@@ -20,7 +20,7 @@ import com.hcl.bank.service.BenificiaryServiceImpl;
 @RequestMapping("/bank")
 public class BenificiaryController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BenificiaryController.class);
 
 	@Autowired
 	BenificiaryServiceImpl benificiaryServiceImpl;

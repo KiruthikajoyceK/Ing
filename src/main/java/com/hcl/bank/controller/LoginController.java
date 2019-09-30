@@ -20,7 +20,7 @@ import com.hcl.bank.service.LoginServiceImpl;
 @RequestMapping("/bank")
 public class LoginController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
 	LoginServiceImpl loginServiceImpl;

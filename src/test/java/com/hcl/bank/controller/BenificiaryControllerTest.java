@@ -10,9 +10,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hcl.bank.dto.BenificiaryRequestDto;
 import com.hcl.bank.dto.BenificiaryResponseDto;
 import com.hcl.bank.service.BenificiaryServiceImpl;
@@ -30,6 +36,8 @@ public class BenificiaryControllerTest {
 	BenificiaryRequestDto benificiaryRequestDto;
 	BenificiaryResponseDto  benificiaryResponseDto;
 	
+	MockMvc mockMvc;
+	
 	@Before
 	public void setup()
 	{
@@ -41,12 +49,14 @@ public class BenificiaryControllerTest {
 		  benificiaryRequestDto.setIfscCode("ING098");
 		 
 		benificiaryResponseDto=new BenificiaryResponseDto();
-		benificiaryResponseDto.setMessage("added success");
+		
+		mockMvc = MockMvcBuilders.standaloneSetup(benificiaryController).build();
+
 		
 		}
 	
 	@Test
-	public void testAddBenificiary()
+	public void testAddBenificiary() throws Exception
 	{
 		Mockito.when(benificiaryServiceImpl.addBenificiary(benificiaryRequestDto)).thenReturn(benificiaryResponseDto);
 	
@@ -55,7 +65,27 @@ public class BenificiaryControllerTest {
 		
 		assertEquals(expected, actual);
 		
+		mockMvc.perform(MockMvcRequestBuilders.post("/bank/addBenificiary").contentType(MediaType.APPLICATION_JSON)
+
+				.content(asJsonString(benificiaryResponseDto))).andExpect(MockMvcResultMatchers.status().isCreated());
+
+	}
+
+	public static String asJsonString(final Object obj) {
+
+		try {
+
+			return new ObjectMapper().writeValueAsString(obj);
+
+		} catch (Exception e) {
+
+			throw new RuntimeException(e);
+
+		}
+
+	}
+		
 	}
 	
 
-}
+

@@ -1,0 +1,9 @@
+com\hcl\bank\controller\RegistrationControllerTest.class
+com\hcl\bank\service\TransactionServiceImplTest.class
+com\hcl\bank\controller\LoginControllerTest.class
+com\hcl\bank\service\BenificiaryServiceImplTest.class
+com\hcl\bank\service\LoginServiceImplTest.class
+com\hcl\bank\BankApplicationTests.class
+com\hcl\bank\controller\BenificiaryControllerTest.class
+com\hcl\bank\controller\TransactionControllerTest.class
+com\hcl\bank\service\RegistrationServiceImplTest.class

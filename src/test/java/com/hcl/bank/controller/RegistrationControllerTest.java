@@ -10,9 +10,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hcl.bank.dto.UserRequestDto;
 import com.hcl.bank.dto.UserResponseDto;
 import com.hcl.bank.service.RegistrationServiceImpl;
@@ -30,6 +36,8 @@ public class RegistrationControllerTest {
 	UserRequestDto userRequestDto;
 	UserResponseDto userResponseDto;
 	
+	MockMvc mockMvc;
+	
 	@Before
 	public void setup()
 	{
@@ -39,14 +47,15 @@ public class RegistrationControllerTest {
 		userRequestDto.setAddress("trichy");
 		
 		 userResponseDto=new UserResponseDto();
-		userResponseDto.setAccountBalance(10000);
-	    userResponseDto.setAccountNumber(987846);	
-	    userResponseDto.setAccountType("savings");
-	}
+		userResponseDto.setAccountNumber(987846);	
+		
+		mockMvc = MockMvcBuilders.standaloneSetup(registrationController).build();
+
+		}
 	
 	
 	@Test
-	public void testRegistration()
+	public void testRegistration() throws Exception
 	{
 		ResponseEntity<UserResponseDto> expRes=new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
 		
@@ -56,8 +65,28 @@ public class RegistrationControllerTest {
 		
 		assertEquals(expRes, actRes);
 		
+		mockMvc.perform(MockMvcRequestBuilders.post("/bank/registration").contentType(MediaType.APPLICATION_JSON)
+
+				.content(asJsonString(userResponseDto))).andExpect(MockMvcResultMatchers.status().isCreated());
+
+	}
+
+	public static String asJsonString(final Object obj) {
+
+		try {
+
+			return new ObjectMapper().writeValueAsString(obj);
+
+		} catch (Exception e) {
+
+			throw new RuntimeException(e);
+
+		}
+
+	}
+		
 		
 	}
 	
 	
-}
+

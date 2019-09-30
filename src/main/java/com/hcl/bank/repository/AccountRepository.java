@@ -8,6 +8,6 @@ import com.hcl.bank.entity.Account;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
-	public Account findByAccountNumber(long fromAccountNo);
+	public Account findByAccountNumber(long accountNo);
 
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationServiceIntf {
 	@Override
 	public UserResponseDto registration(UserRequestDto userRequestDto) {
 		
-		Optional<User> user1=userRepository.findByMobileNo(userRequestDto.getMobileNo());
+		Optional<User> user1=userRepository.findByMobileNoAndEmail(userRequestDto.getMobileNo(),userRequestDto.getEmail());
 		
 		RandomPasswordGenerator passwordGenerator=new RandomPasswordGenerator();
 		
@@ -46,6 +45,7 @@ public class RegistrationServiceImpl implements RegistrationServiceIntf {
 		
 		if(user1.isPresent())
 		{
+			
 			throw new CommonException(FundtransferConstants.EXISTS_USER);
 		}
 		else
@@ -88,19 +88,22 @@ public class RegistrationServiceImpl implements RegistrationServiceIntf {
 				
 				user.setMobileNo(userRequestDto.getMobileNo());
 				user.setPassword(password);
-				userRepository.save(user);
+				User userr=userRepository.save(user);
 				@SuppressWarnings("static-access")
 				long accountNo=passwordGenerator.random(500000, 900000);
 				
 				Account account=new Account();
 				
 				account.setAccountNumber(accountNo+3);
-				account.setAccountBalance(10000);
+				account.setAccountBalance(500);
 				account.setAccountCreationDate(LocalDate.now());
 				account.setAccountType("Savings");
 				account.setUser(user);
-				accountRepository.save(account);
-				BeanUtils.copyProperties(account, userResponseDto);
+				Account accountt=accountRepository.save(account);
+				
+				userResponseDto.setAccountNumber(accountt.getAccountNumber());
+				userResponseDto.setPassword(userr.getPassword());
+				userResponseDto.setMessage(FundtransferConstants.ACCOUNT_CREATED);
 				
 				return userResponseDto;
 		}
@@ -108,8 +111,8 @@ public class RegistrationServiceImpl implements RegistrationServiceIntf {
 			}
 	 public static boolean emailValidation(String email)
 	    {
-	        String email_pattern = "^[a-zA-Z0-9_#$%&’*+/=?^.-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-	        Pattern pat = Pattern.compile(email_pattern);
+	        String emailPattern = "^[a-zA-Z0-9_#$%&’*+/=?^.-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+	        Pattern pat = Pattern.compile(emailPattern);
 	        Matcher mat = pat.matcher(email);
 	        return mat.matches();
 	    }

@@ -1,0 +1,6 @@
+projectKey=com.hcl:bank
+serverUrl=http://localhost:9000
+serverVersion=6.6.0.32724
+dashboardUrl=http://localhost:9000/dashboard/index/com.hcl:bank
+ceTaskId=AW2BAo7KIC7cWoHbBAMC
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AW2BAo7KIC7cWoHbBAMC

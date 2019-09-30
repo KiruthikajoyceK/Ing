@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BenificiaryServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bank</a> &gt; <a href="index.source.html" class="el_package">com.hcl.bank.service</a> &gt; <span class="el_source">BenificiaryServiceImpl.java</span></div><h1>BenificiaryServiceImpl.java</h1><pre class="source lang-java linenums">package com.hcl.bank.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hcl.bank.constants.FundtransferConstants;
+import com.hcl.bank.dto.BenificiaryRequestDto;
+import com.hcl.bank.dto.BenificiaryResponseDto;
+import com.hcl.bank.entity.Benificiary;
+import com.hcl.bank.entity.User;
+import com.hcl.bank.exception.CommonException;
+import com.hcl.bank.repository.BenificiaryRepository;
+import com.hcl.bank.repository.UserRepository;
+
+@Service
+<span class="fc" id="L18">public class BenificiaryServiceImpl implements BenificiaryServiceIntf {</span>
+
+	@Autowired
+	BenificiaryRepository benificiaryRepository;
+
+	@Autowired
+	UserRepository userRepository;
+
+	@Override
+	public BenificiaryResponseDto addBenificiary(BenificiaryRequestDto benificiaryRequestDto) {
+
+<span class="fc" id="L29">		int userId = benificiaryRequestDto.getUserId();</span>
+<span class="fc" id="L30">		User user = userRepository.findByUserId(userId);</span>
+
+<span class="fc" id="L32">		List&lt;Benificiary&gt; benificiaries = user.getBenificiaries();</span>
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		if (benificiaries.isEmpty()) {</span>
+<span class="fc" id="L35">			Benificiary benificiary1 = new Benificiary();</span>
+<span class="fc" id="L36">			benificiary1.setBenificiaryAccountNo(benificiaryRequestDto.getBenificiaryAccountNo());</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">			if (benificiaryRequestDto.getBenificiaryAccountType().isEmpty()) {</span>
+<span class="fc" id="L39">				throw new CommonException(FundtransferConstants.BENIFICIARY_ACCOUNT_TYPE);</span>
+			}
+<span class="fc" id="L41">			benificiary1.setBenificiaryAccountType(benificiaryRequestDto.getBenificiaryAccountType());</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			if (benificiaryRequestDto.getBenificiaryBankName().isEmpty()) {</span>
+<span class="fc" id="L44">				throw new CommonException(FundtransferConstants.BENIFICIARY_BANK_NAME);</span>
+			}
+<span class="fc" id="L46">			benificiary1.setBenificiaryBankName(benificiaryRequestDto.getBenificiaryBankName());</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">			if (benificiaryRequestDto.getBenificiaryName().isEmpty()) {</span>
+<span class="fc" id="L49">				throw new CommonException(FundtransferConstants.BENIFICIARY_NAME);</span>
+			}
+<span class="fc" id="L51">			benificiary1.setBenificiaryName(benificiaryRequestDto.getBenificiaryName());</span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">			if (benificiaryRequestDto.getIfscCode().isEmpty()) {</span>
+<span class="fc" id="L54">				throw new CommonException(FundtransferConstants.IFSC_CODE);</span>
+			}
+<span class="fc" id="L56">			benificiary1.setIfscCode(benificiaryRequestDto.getIfscCode());</span>
+<span class="fc" id="L57">			benificiary1.setUser(user);</span>
+<span class="fc" id="L58">			benificiaryRepository.save(benificiary1);</span>
+
+		}
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		for (Benificiary benificiaryy : benificiaries) {</span>
+
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">			if (benificiaryy.getBenificiaryAccountNo() == benificiaryRequestDto.getBenificiaryAccountNo()) {</span>
+<span class="nc" id="L65">				throw new CommonException(FundtransferConstants.BENIFICIARY_EXITS);</span>
+			}
+<span class="fc" id="L67">			Benificiary benificiary = new Benificiary();</span>
+<span class="fc" id="L68">			benificiary.setBenificiaryAccountNo(benificiaryRequestDto.getBenificiaryAccountNo());</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if (benificiaryRequestDto.getBenificiaryAccountType().isEmpty()) {</span>
+<span class="fc" id="L71">				throw new CommonException(FundtransferConstants.BENIFICIARY_ACCOUNT_TYPE);</span>
+			}
+<span class="fc" id="L73">			benificiary.setBenificiaryAccountType(benificiaryRequestDto.getBenificiaryAccountType());</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">			if (benificiaryRequestDto.getBenificiaryBankName().isEmpty()) {</span>
+<span class="fc" id="L76">				throw new CommonException(FundtransferConstants.BENIFICIARY_BANK_NAME);</span>
+			}
+<span class="fc" id="L78">			benificiary.setBenificiaryBankName(benificiaryRequestDto.getBenificiaryBankName());</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">			if (benificiaryRequestDto.getBenificiaryName().isEmpty()) {</span>
+<span class="fc" id="L81">				throw new CommonException(FundtransferConstants.BENIFICIARY_NAME);</span>
+			}
+<span class="fc" id="L83">			benificiary.setBenificiaryName(benificiaryRequestDto.getBenificiaryName());</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">			if (benificiaryRequestDto.getIfscCode().isEmpty()) {</span>
+<span class="fc" id="L86">				throw new CommonException(FundtransferConstants.IFSC_CODE);</span>
+			}
+<span class="fc" id="L88">			benificiary.setIfscCode(benificiaryRequestDto.getIfscCode());</span>
+<span class="fc" id="L89">			benificiary.setUser(user);</span>
+<span class="fc" id="L90">			benificiaryRepository.save(benificiary);</span>
+<span class="fc" id="L91">		}</span>
+
+<span class="fc" id="L93">		BenificiaryResponseDto benificiaryResponseDto = new BenificiaryResponseDto();</span>
+<span class="fc" id="L94">		benificiaryResponseDto.setMessage(&quot;added successfully&quot;);</span>
+
+<span class="fc" id="L96">		return benificiaryResponseDto;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

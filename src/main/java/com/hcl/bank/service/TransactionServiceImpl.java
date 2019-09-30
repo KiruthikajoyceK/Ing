@@ -12,6 +12,7 @@ import com.hcl.bank.dto.FundTransferRequestDto;
 import com.hcl.bank.dto.FundTransferResponseDto;
 import com.hcl.bank.dto.TransactionResponseDto;
 import com.hcl.bank.entity.Account;
+import com.hcl.bank.entity.Benificiary;
 import com.hcl.bank.entity.Transaction;
 import com.hcl.bank.exception.CommonException;
 import com.hcl.bank.repository.AccountRepository;
@@ -40,14 +41,22 @@ public class TransactionServiceImpl implements TransactionServiceIntf {
 		}
 		Account fromAccount = accountRepository.findByAccountNumber(fundTransferRequestDto.getFromAccountNo());
         
-		/*
-		 * int userId=fromAccount.getUser().getUserId(); List<Benificiary>
-		 * benificiary=benificiaryRepository.findBenificiaryByUserId(userId); for
-		 * (Benificiary benificiary2 : benificiary) {
-		 * if(benificiary2.getBenificiaryAccountNo()==fundTransferRequestDto.
-		 * getToAccountNo()) { throw new
-		 * CommonException(FundtransferConstants.NOT_IN_LIST); }
-		 */
+		
+		int userId=fromAccount.getUser().getUserId();
+		  List<Benificiary> benificiary=benificiaryRepository.findBenificiaryByUserId(userId); 
+		  
+		  if(benificiary.isEmpty())
+		  {
+			  throw new CommonException(FundtransferConstants.ADD_BENIFICIARY);
+		  }
+		  
+		  for(Benificiary benificiary2 : benificiary) {
+			  
+			 
+			  if(benificiary2.getBenificiaryAccountNo()!=fundTransferRequestDto.getToAccountNo())
+			  { 
+				  throw new CommonException(FundtransferConstants.NOT_IN_LIST);
+			  }
 		
 		
 		Account toAccount = accountRepository.findByAccountNumber(fundTransferRequestDto.getToAccountNo());
@@ -89,7 +98,7 @@ public class TransactionServiceImpl implements TransactionServiceIntf {
 		creditTransaction.setTransactionType(FundtransferConstants.CREDITED);
 		creditTransaction.setUser(toAccount.getUser());
 		transactionRepository.save(creditTransaction);
-		
+		  }
 	
 		FundTransferResponseDto fundTransferResponseDto = new FundTransferResponseDto();
 		fundTransferResponseDto.setMessage("transferred successfully");
@@ -104,7 +113,7 @@ public class TransactionServiceImpl implements TransactionServiceIntf {
 
 		LocalDate currentDate = LocalDate.now();
 
-		List<TransactionResponseDto> transactionResponseDtos = new ArrayList<TransactionResponseDto>();
+		List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
 
 		if (noOfMonths == 0) {
 			LocalDate calculatedDate = currentDate.minusWeeks(noOfWeeks);

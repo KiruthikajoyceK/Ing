@@ -25,15 +25,17 @@ import com.hcl.bank.service.TransactionServiceImpl;
 @RequestMapping("/bank")
 public class TransactionController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionController.class);
 
 	@Autowired
 	TransactionServiceImpl transactionServiceImpl;
 	
 	@PostMapping("/fundTransfer")
 	public ResponseEntity<FundTransferResponseDto> fundTransfer(@RequestBody FundTransferRequestDto fundTransferRequestDto) {
-
+        
+		
 		LOGGER.info("inside fund transfer");
+	
 
 		FundTransferResponseDto fundTransferResponseDto=	transactionServiceImpl.fundTransfer(fundTransferRequestDto);
 		

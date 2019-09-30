@@ -21,9 +21,9 @@ public class LoginServiceImpl implements LoginServiceIntf{
 	
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 		
-		String userName=loginRequestDto.getUserName();
+		String email=loginRequestDto.getEmail();
 		String password=loginRequestDto.getPassword();
-		Optional<User> user=userRepository.findByUserNameAndPassword(userName,password);
+		Optional<User> user=userRepository.findByEmailAndPassword(email,password);
 		if(user.isPresent()) {
 			User userr=user.get();
 			return new LoginResponseDto(FundtransferConstants.SUCCESS,userr.getUserId());

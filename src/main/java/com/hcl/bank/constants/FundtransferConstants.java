@@ -3,6 +3,9 @@ package com.hcl.bank.constants;
 
 public class FundtransferConstants {
 
+	public FundtransferConstants() {
+		super();
+	}
 	public static final String USER_NOT_FOUND = "Not Found";
 	public static final String SUCCESS = "Login Successful";
 	public static final String EMPTY_USER = "Please Enter Your Details";
@@ -24,6 +27,8 @@ public class FundtransferConstants {
 	public static final String ACCOUNT_SAME = "Both Account Not Be Same";
 	public static final String INVALID_NEGATIVE_BALANCE = "Amount Should Not Be Negative";
 	public static final String NOT_IN_LIST = "This person is not there";
+	public static final String ACCOUNT_CREATED = "Account Created Successfully";
+	public static final String ADD_BENIFICIARY = "Please Add benificiary For Make a Transaction";
 	
 
 	

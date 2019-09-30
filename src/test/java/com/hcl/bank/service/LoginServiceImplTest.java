@@ -34,7 +34,7 @@ public class LoginServiceImplTest {
 	public void setup()
 	{
 		loginRequestDto=new LoginRequestDto();
-		loginRequestDto.setUserName("kiruthika");
+		loginRequestDto.setEmail("ki@gmail.com");
 		loginRequestDto.setPassword("abc");
 		
 		loginResponseDto=new LoginResponseDto();
@@ -52,7 +52,7 @@ public class LoginServiceImplTest {
 	{
 		//Optional<User> user=userRepository.findByUserNameAndPassword(loginRequestDto.getUserName(),loginRequestDto.getPassword());
 		
-		Mockito.when(userRepository.findByUserNameAndPassword(loginRequestDto.getUserName(), loginRequestDto.getPassword()))
+		Mockito.when(userRepository.findByEmailAndPassword(loginRequestDto.getEmail(), loginRequestDto.getPassword()))
 		.thenReturn(Optional.of(user));
 		LoginResponseDto actRes	=loginServiceImpl.login(loginRequestDto);
 		
