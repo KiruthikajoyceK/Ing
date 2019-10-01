@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.hcl.bank.dto.LoginRequestDto;
 import com.hcl.bank.dto.LoginResponseDto;
 import com.hcl.bank.entity.User;
+import com.hcl.bank.exception.UserNotFoundException;
 import com.hcl.bank.repository.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,7 +51,6 @@ public class LoginServiceImplTest {
 	@Test
 	public void testLogin()
 	{
-		//Optional<User> user=userRepository.findByUserNameAndPassword(loginRequestDto.getUserName(),loginRequestDto.getPassword());
 		
 		Mockito.when(userRepository.findByEmailAndPassword(loginRequestDto.getEmail(), loginRequestDto.getPassword()))
 		.thenReturn(Optional.of(user));
@@ -58,5 +58,20 @@ public class LoginServiceImplTest {
 		
 		Assert.assertEquals(loginResponseDto.getUserId(),actRes.getUserId());
 	}
+	
+	@Test(expected = UserNotFoundException.class)
+	public void testLogin1()
+	{
+		loginRequestDto=new LoginRequestDto();
+		loginRequestDto.setPassword("bcde");
+		loginRequestDto.setEmail("k@gmail.com");
+		User user=new User();
+		user.setPassword("b");
+		user.setEmail("k@gmail.com");
+		Mockito.when(userRepository.findByEmailAndPassword(loginRequestDto.getEmail(), loginRequestDto.getPassword()))
+		.thenReturn(Optional.empty());
+		loginResponseDto	=loginServiceImpl.login(loginRequestDto);
+		
+			}
 
 }

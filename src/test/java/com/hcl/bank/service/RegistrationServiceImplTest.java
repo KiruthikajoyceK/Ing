@@ -16,6 +16,7 @@ import com.hcl.bank.dto.UserRequestDto;
 import com.hcl.bank.dto.UserResponseDto;
 import com.hcl.bank.entity.Account;
 import com.hcl.bank.entity.User;
+import com.hcl.bank.exception.CommonException;
 import com.hcl.bank.repository.AccountRepository;
 import com.hcl.bank.repository.UserRepository;
 
@@ -35,6 +36,7 @@ public class RegistrationServiceImplTest {
 
 	Account account;
 	User user1;
+	UserResponseDto userResponseDto;
 	
 	Optional<User> user = null;
 	@Before
@@ -76,4 +78,62 @@ public class RegistrationServiceImplTest {
 
 	}
 
+	@Test(expected = CommonException.class)
+	public void testRegistration2() {
+
+		User user=new User();
+		
+		Mockito.when(userRepository.findByMobileNoAndEmail(Mockito.anyLong(),Mockito.anyString())).thenReturn(Optional.of(user));
+		 userResponseDto = registrationServiceImpl.registration(userRequestDto);
+		
+
+	}
+	@Test(expected = CommonException.class)
+	public void testRegistration3() {
+
+		Mockito.when(userRepository.findByMobileNoAndEmail(Mockito.anyLong(),Mockito.anyString())).thenReturn(Optional.empty());
+		String userName="";
+		userRequestDto.setUserName(userName);
+		 userResponseDto = registrationServiceImpl.registration(userRequestDto);
+		
+	}
+	@Test(expected = CommonException.class)
+	public void testRegistration4() {
+
+		Mockito.when(userRepository.findByMobileNoAndEmail(Mockito.anyLong(),Mockito.anyString())).thenReturn(Optional.empty());
+		String userName="kiruthika";
+		String address="";
+		userRequestDto.setUserName(userName);
+		userRequestDto.setAddress(address);
+		 userResponseDto = registrationServiceImpl.registration(userRequestDto);
+		
+	}
+	@Test(expected = CommonException.class)
+	public void testRegistration5() {
+
+		Mockito.when(userRepository.findByMobileNoAndEmail(Mockito.anyLong(),Mockito.anyString())).thenReturn(Optional.empty());
+		String userName="kiruthika";
+		String address="";
+		int age=16;
+		userRequestDto.setUserName(userName);
+		userRequestDto.setAddress(address);
+		userRequestDto.setAge(age);
+		 userResponseDto = registrationServiceImpl.registration(userRequestDto);
+		
+	}
+	@Test(expected = CommonException.class)
+	public void testRegistration6() {
+
+		Mockito.when(userRepository.findByMobileNoAndEmail(Mockito.anyLong(),Mockito.anyString())).thenReturn(Optional.empty());
+		String userName="kiruthika";
+		String address="";
+		int age=16;
+		String email="k.com";
+		userRequestDto.setUserName(userName);
+		userRequestDto.setAddress(address);
+		userRequestDto.setAge(age);
+		userRequestDto.setEmail(email);
+		 userResponseDto = registrationServiceImpl.registration(userRequestDto);
+		
+	}
 }

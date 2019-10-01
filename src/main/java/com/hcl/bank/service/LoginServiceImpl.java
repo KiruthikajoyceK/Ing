@@ -26,11 +26,13 @@ public class LoginServiceImpl implements LoginServiceIntf{
 		Optional<User> user=userRepository.findByEmailAndPassword(email,password);
 		if(user.isPresent()) {
 			User userr=user.get();
+			
 			return new LoginResponseDto(FundtransferConstants.SUCCESS,userr.getUserId());
 			
 		}
 		else
 			{
+		
 				throw new UserNotFoundException(FundtransferConstants.INVALID_CREDENTIALS);
 			}
 			
